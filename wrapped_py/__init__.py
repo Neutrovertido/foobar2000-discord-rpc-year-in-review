@@ -34,18 +34,17 @@ def fetch_image(url, album=None, retries=3, timeout=10):
                         img_response.raise_for_status()
                         
                         if img_response.status_code == 200:
-                            print(f"Found cover for: {artist_name} - {album_name} on MusicBrainz after {attempt + 1} attempts.")
+                            print(f"🎉 Found cover for: {artist_name} - {album_name} on MusicBrainz after {attempt + 1} attempts.")
                             return Image.open(BytesIO(img_response.content))
                         
                 except requests.exceptions.RequestException as e:
                     # Log the error & delay next retry (if applicable)
-                    print(f"Error fetching MusicBrainz cover art (Attempt {attempt + 1}/{retries}): {e}")
+                    print(f"⚠️ Error fetching MusicBrainz cover art (Attempt {attempt + 1}/{retries}): {e}")
                     if attempt < retries - 1:
                         time.sleep(2 ** attempt)  # Exponential backoff
 
                 except Exception as anyE:
-                    print(f"Non-HTTP Error fetching MusicBrainz cover art (Attempt {attempt + 1}/{retries}): {anyE}")
-
+                    print(f"🔴 Non-HTTP Error fetching MusicBrainz cover art (Attempt {attempt + 1}/{retries}): {anyE}")
 
         # Fallback to placeholder if no URL found
         if url is None:
@@ -56,14 +55,14 @@ def fetch_image(url, album=None, retries=3, timeout=10):
         response.raise_for_status()
         img = Image.open(BytesIO(response.content))
         if url == PLACEHOLDER_URL:
-            print(f"Couldn't find cover for: {artist_name} - {album_name}. Defaulting to placeholder.")
+            print(f"❌ Couldn't find cover for: {artist_name} - {album_name}. Defaulting to placeholder.")
         else:
-            print(f"Found cover (URL) inside the JSON for: {artist_name} - {album_name}.")
+            print(f"🌐 Found cover (URL) inside the JSON for: {artist_name} - {album_name}.")
         return img
 
     except Exception as e:
-        print(f"Error fetching image: {e}")
-        print(f"Defaulting to placeholder for: {artist_name} - {album_name}.")
+        print(f"🆘 Error fetching image: {e}")
+        print(f"🖼️ Defaulting to placeholder for: {artist_name} - {album_name}.")
         return Image.open(BytesIO(requests.get(PLACEHOLDER_URL).content))  # Fallback to placeholder on error
 
 # Load the JSON file 'album.json'
