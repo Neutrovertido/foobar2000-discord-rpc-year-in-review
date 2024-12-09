@@ -19,7 +19,11 @@ def fetch_image(url, album=None, retries=3, timeout=10):
 
         if url is None and album is not None:
             # Search for the album on MusicBrainz
-            search_url = f"https://musicbrainz.org/ws/2/release/?query=artist:{artist_name}+AND+release:{album_name}&fmt=json"
+            search_url = (
+                "https://musicbrainz.org/ws/2/release/?query=artist:"
+                f"{artist_name}+AND+release:"
+                f"{album_name}&fmt=json"
+            )
 
             for attempt in range(retries):
                 try:
@@ -36,21 +40,27 @@ def fetch_image(url, album=None, retries=3, timeout=10):
 
                         if img_response.status_code == 200:
                             print(
-                                f"🎉 Found cover for: {artist_name} - {album_name} on MusicBrainz after {attempt + 1} attempts."
+                                message=(
+                                    f"🎉 Found cover for: {artist_name} - "
+                                    f"{album_name} on MusicBrainz after "
+                                    f"{attempt + 1} attempts."
+                                )
                             )
                             return Image.open(BytesIO(img_response.content))
 
                 except requests.exceptions.RequestException as e:
                     # Log the error & delay next retry (if applicable)
                     print(
-                        f"⚠️ Error fetching MusicBrainz cover art (Attempt {attempt + 1}/{retries}): {e}"
+                        f"⚠️ Error fetching MusicBrainz cover art "
+                        f"(Attempt {attempt + 1}/{retries}): {e}"
                     )
                     if attempt < retries - 1:
                         time.sleep(2**attempt)  # Exponential backoff
 
                 except Exception as anyE:
                     print(
-                        f"🔴 Non-HTTP Error fetching MusicBrainz cover art (Attempt {attempt + 1}/{retries}): {anyE}"
+                        f"🔴 Non-HTTP Error fetching MusicBrainz cover art "
+                        f"(Attempt {attempt + 1}/{retries}): {anyE}"
                     )
 
         # Fallback to placeholder if no URL found
@@ -63,17 +73,21 @@ def fetch_image(url, album=None, retries=3, timeout=10):
         img = Image.open(BytesIO(response.content))
         if url == PLACEHOLDER_URL:
             print(
-                f"❌ Couldn't find cover for: {artist_name} - {album_name}. Defaulting to placeholder."
+                f"❌ Couldn't find cover for: {artist_name} - {album_name}. "
+                f"Defaulting to placeholder."
             )
         else:
             print(
-                f"🌐 Found cover (URL) inside the JSON for: {artist_name} - {album_name}."
+                f"🌐 Found cover (URL) inside the JSON for: "
+                f"{artist_name} - {album_name}."
             )
         return img
 
     except Exception as e:
         print(f"🆘 Error fetching image: {e}")
-        print(f"🖼️ Defaulting to placeholder for: {artist_name} - {album_name}.")
+        print(
+            f"🖼️ Defaulting to placeholder for: {artist_name} - {album_name}."
+        )
         return Image.open(
             BytesIO(requests.get(PLACEHOLDER_URL).content)
         )  # Fallback to placeholder on error
@@ -113,8 +127,10 @@ def create_review_image(albums):
     title = "My Year in Review"
     bbox = draw.textbbox((0, 0), title, font=font)
     text_width = bbox[2] - bbox[0]
-    text_height = bbox[3] - bbox[1]
-    draw.text(((width - text_width) / 2, 30), title, fill=SPOTIFY_WHITE, font=font)
+    # text_height = bbox[3] - bbox[1]
+    draw.text(
+        ((width - text_width) / 2, 30), title, fill=SPOTIFY_WHITE, font=font
+    )
 
     # Album covers start
     x = padding
