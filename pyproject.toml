@@ -11,6 +11,12 @@ requests = "^2.32.3"
 pillow = "^11.0.0"
 
 
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.1.1"
+black = "^24.10.0"
+mypy = "^1.13.0"
+types-requests = "^2.32.0.20241016"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
