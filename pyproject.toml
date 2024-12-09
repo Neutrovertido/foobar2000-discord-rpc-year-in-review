@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "wrapped-py"
 version = "0.1.0"
-description = ""
+description = "Year in review generator for Foobar2000's Discord Rich Presence component. Made in Python with Pillow. "
 authors = []
 readme = "README.md"
 
